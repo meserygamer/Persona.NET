@@ -25,6 +25,10 @@ ProjectPersona.CliTools/
     └── Attributes/                    ExistingFile, ExistingDirectory, AssemblySelectors (Name or Name:tfm)
 ```
 
+## Runtime requirements for generation
+
+`MsBuildSolutionSession` calls `MSBuildLocator.RegisterDefaults()` and then `MSBuildWorkspace.OpenSolutionAsync`. MSBuild therefore comes from a .NET SDK installed on the machine, not from the application. That SDK must be able to build the analyzed solution (target frameworks, language version, `global.json`), and the solution must be restored beforehand. Workspace failures are printed to stderr as `Failure: …`; unresolved types in the output usually mean a missing restore or an SDK that is too old.
+
 ## Flow
 
 1. `Startup.cs` parses the subcommand with `System.CommandLine`. Each `CommandBuilders/*CommandBuilder` builds an options record and runs it through `DataAnnotationsInputValidator` (`Required`, `ExistingFile`, `ExistingDirectory`, `AssemblySelectors`, `Range`) before the handler in `CommandHandlers/` runs.

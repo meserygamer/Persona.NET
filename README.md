@@ -23,7 +23,9 @@ Agents read signatures from the catalog and pull method bodies or consumers on d
 
 ## Requirements
 
-- .NET 10 SDK
+- .NET 10 SDK (or newer) — to build Persona.NET. Running the MCP servers only needs the .NET 10 Runtime.
+- **A .NET SDK that can build the solution you want to analyze** — needed only for generation (`CliTools`). The MCP servers do not use Roslyn or MSBuild and just read the generated index, so they do not need this SDK. The generator opens your `.sln` with Roslyn's `MSBuildWorkspace`, and `MSBuildLocator` loads MSBuild from an SDK installed on the machine. That SDK must support your solution's target frameworks and language version (check its `global.json`, if any). If it is too old, projects fail to load or types are reported as unresolved.
+- The analyzed solution must be **restored** (`dotnet restore`) so package references resolve; for .NET Framework projects, the targeting packs or reference assemblies must be available.
 - For RAG only: Windows x64, a GGUF embedding model (for example `embeddinggemma-2-Q8_0.gguf`) and a [llama.cpp](https://github.com/ggml-org/llama.cpp) **b12359** `llama.dll` build. Other builds may be ABI-incompatible.
 
 ### Embedding model

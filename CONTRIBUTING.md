@@ -4,7 +4,7 @@ English | [Русский](CONTRIBUTING.ru.md)
 
 ## Setup
 
-- .NET 10 SDK
+- .NET 10 SDK (or newer). To run the generator against a solution you also need an SDK that can build that solution (see the README requirements).
 - Windows x64 is required to run the RAG features (the native wrapper targets `llama.dll`); building, the catalog/index generation and the tests do not need it.
 
 ```
