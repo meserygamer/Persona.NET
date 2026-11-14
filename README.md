@@ -48,8 +48,7 @@ dotnet build ProjectPersona/ProjectPersona.sln
 ### 1. Generate the catalog and the source index
 
 ```
-dotnet run --project ProjectPersona/ProjectPersona.CliTools -- \
-  generate-type-artifacts <path/to/YourSolution.sln> <catalog-output-dir> <index-output-dir>
+dotnet run --project ProjectPersona/ProjectPersona.CliTools generate-type-artifacts <path/to/YourSolution.sln> <catalog-output-dir> <index-output-dir>
 ```
 
 This writes `{Assembly}[.{tfm}].md` files into the catalog directory and `type-source-index.db` into the index directory. Other subcommands: `generate-type-catalog`, `generate-type-source-index`.
@@ -59,8 +58,7 @@ This writes `{Assembly}[.{tfm}].md` files into the catalog directory and `type-s
 Copy `ProjectPersona/ProjectPersona.CliTools/llama-options.example.json`, set `modelPath` and `nativeLibraryDirectory`, then:
 
 ```
-dotnet run --project ProjectPersona/ProjectPersona.CliTools -- \
-  vectorize-type-source-index <index-dir> <lancedb-dir> --vector-dimension 768 --llama-options <your-options.json>
+dotnet run --project ProjectPersona/ProjectPersona.CliTools vectorize-type-source-index <index-dir> <lancedb-dir> --vector-dimension 768 --llama-options <your-options.json>
 ```
 
 Use `revectorize-assemblies` to refresh only selected assemblies afterwards.

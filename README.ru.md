@@ -48,8 +48,7 @@ dotnet build ProjectPersona/ProjectPersona.sln
 ### 1. Генерация каталога и индекса исходников
 
 ```
-dotnet run --project ProjectPersona/ProjectPersona.CliTools -- \
-  generate-type-artifacts <путь/к/ВашемуРешению.sln> <каталог-для-каталога-типов> <каталог-для-индекса>
+dotnet run --project ProjectPersona/ProjectPersona.CliTools generate-type-artifacts <путь/к/ВашемуРешению.sln> <каталог-для-каталога-типов> <каталог-для-индекса>
 ```
 
 Команда пишет файлы `{Assembly}[.{tfm}].md` в каталог типов и `type-source-index.db` в каталог индекса. Другие подкоманды: `generate-type-catalog`, `generate-type-source-index`.
@@ -59,8 +58,7 @@ dotnet run --project ProjectPersona/ProjectPersona.CliTools -- \
 Скопируйте `ProjectPersona/ProjectPersona.CliTools/llama-options.example.json`, укажите `modelPath` и `nativeLibraryDirectory`, затем:
 
 ```
-dotnet run --project ProjectPersona/ProjectPersona.CliTools -- \
-  vectorize-type-source-index <каталог-индекса> <каталог-lancedb> --vector-dimension 768 --llama-options <ваш-файл.json>
+dotnet run --project ProjectPersona/ProjectPersona.CliTools vectorize-type-source-index <каталог-индекса> <каталог-lancedb> --vector-dimension 768 --llama-options <ваш-файл.json>
 ```
 
 Позже `revectorize-assemblies` обновит только выбранные сборки.
