@@ -5,3 +5,17 @@ riderModule.iml
 /_ReSharper.Caches/
 **/type-source-index/
 .idea
+# Visual Studio / user-specific
+.vs/
+*.user
+*.suo
+
+# Generated artifacts and local runtime data
+**/type-catalog/
+**/lance-db/
+**/vector-store/
+**/logs/
+
+# Local model and native binaries
+*.gguf
+llama-b*/

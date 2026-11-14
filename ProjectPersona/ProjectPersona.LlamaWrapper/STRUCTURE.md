@@ -19,7 +19,7 @@ ProjectPersona.LlamaWrapper/
 ## Notes
 
 - The directory containing `llama.dll` is set only through `LlamaSettings.NativeLibraryDirectory`. There is no auto-discovery (no environment variable, application directory or neighbouring assemblies); an empty value is an error.
-- The model file is `LlamaSettings.ModelPath` (the embedding model used is `embeddinggemma-2-Q8_0.gguf`, supplied locally).
+- The model file is `LlamaSettings.ModelPath` (tested with `embeddinggemma-2-Q8_0.gguf` from Unsloth, supplied locally; other GGUF embedding models work too if the vector dimension and prompt templates are adjusted).
 - `LlamaModelSessionHolder` (in RagTextSearch) keeps one session per process; `LlamaTextTokenizer` and `LlamaTextEmbedder` share it.
 
 ## Related
