@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "libraries-info": {
+      "type": "http",
+      "url": "http://host.docker.internal:55095/mcp"
+    }
+  }
+}

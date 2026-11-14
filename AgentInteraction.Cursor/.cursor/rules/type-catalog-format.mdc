@@ -1,0 +1,77 @@
+---
+description: Формат markdown type-catalog — YAML, якоря, типы, члены, XML
+globs: "**/type-catalog/**/*.md"
+alwaysApply: false
+---
+
+# Формат type-catalog
+
+Снимок объявлений. Файлы не редактировать.
+
+```
+---
+assembly: Sample.Storage
+targetFramework: net472
+namespaces: 2
+types: 3
+---
+
+# Sample.Storage (net472)
+## Namespaces
+- [Sample.Storage](#ns-sample-storage)
+
+## Sample.Storage {#ns-sample-storage}
+
+### `public abstract class Store<TItem>` {#type-sample-storage-store}
+
+FQN: `Sample.Storage.Store`
+Type params: `TItem : Sample.Storage.IItem`
+Base: `Sample.Storage.StoreBase`
+Implements: `Sample.Storage.IStore<TItem>`, `Sample.Storage.IStore`
+Attributes: `System.ObsoleteAttribute("use Sample.Storage.StoreBuilder")`
+
+> Краткое описание типа.
+
+#### Members
+
+- `public string Name { get; private set; }`
+  > Имя хранилища.
+- `public bool IsOpen { get...; }`
+  > Аксессор с телом: в снимке тело заменено на `...`.
+- `private readonly field string _name`
+- `public void Save(bool validate = false)`
+  - attr `System.ObsoleteAttribute("use SaveAsync")`
+  - param `validate`: `bool` = `false`
+  - returns: `void`
+- `public Store()`
+- `public Sample.Storage.IItem this[string key] { get; }`
+- `public static Sample.Storage.Store<TItem> operator +(Sample.Storage.Store<TItem> left, Sample.Storage.Store<TItem> right)`
+  - returns: `Sample.Storage.Store<TItem>`
+- `public static Sample.Storage.Display implicit operator Sample.Storage.Display(Sample.Storage.Store<TItem> store)`
+  - returns: `Sample.Storage.Display`
+- `public event Sample.Storage.ItemHandler ItemAdded`
+- `System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()`
+  - returns: `System.Collections.IEnumerator`
+```
+
+## Как читать
+
+- YAML `assembly` — имя сборки. `targetFramework` — TFM этой компиляции, если таргет известен. Один TFM: файл `{Assembly}.md` и заголовок `# {Assembly}`. Несколько TFM: `{Assembly}.{tfm}.md` и заголовок `# {Assembly} ({tfm})`. Снимки TFM не сливаются.
+- Заголовок типа: `` `доступ [модификаторы] kind Name<T>` ``. Kind: `class`, `struct`, `interface`, `record`, `record struct`, `enum`, `delegate`. Доступ включает `file`. Модификаторы: `abstract`, `sealed`, `static`, `readonly`, `ref`. Слова `partial` в заголовке нет. У делегата в заголовке уже есть возвращаемый тип и параметры. Variance параметра (`in`, `out`) стоит в угловых скобках заголовка.
+- `FQN` — имя объявленного типа без `global::` и без аргументов generic. Вложенный тип: `Namespace.Outer.Inner`.
+- `Type params` — параметры с ограничениями. Имя параметра типа остаётся коротким (`TItem`); variance пишется перед ним (`out TItem : Sample.Storage.IItem`). Ограничения в этой строке: тип-FQN, `class`, `class?`, `struct`, `unmanaged`, `notnull`, `new()`.
+- `Base` — непосредственный базовый класс или underlying type enum. `Implements` — непосредственные интерфейсы. Цепочки до `object` в снимке нет.
+- Типы в сигнатурах, `Base`, `Implements`, `Attributes`, `param` и `returns` — FQN. Примитивы остаются keywords (`string`, `int`, `void`, `bool`, `object`). Короткое имя значит, что резолв не удался: не подставляй FQN сам.
+- `Attributes` у типа и `attr` у члена — тип атрибута и аргументы как в исходнике. Цель с префиксом пишется так: `return: System.Runtime.InteropServices.MarshalAsAttribute(...)`.
+- Член: `` - `доступ [модификаторы] тип Name` ``. У поля перед типом стоит `field`. У события — слово `event`. У свойства — компактные аксессоры (`{ get; }`, `{ get...; }`, `{ get; private set; }`). `...` у аксессора значит, что тело опущено. `returns:` есть у методов и операторов. Модификатор параметра (`ref`, `out`, `in`, `params`) стоит перед типом и в сигнатуре, и на строке `param`. Значение по умолчанию пишется в обоих местах: `bool validate = false` и `` `bool` = `false` ``.
+- Член перечисления — строка только с именем: `` - `Red` ``. Числовое значение константы в снимок не входит.
+- Явная реализация интерфейса — без `private` и без `public`. В каталоге имя члена — `Интерфейс.Член` с FQN интерфейса. В `memberNames` MCP передаётся идентификатор (`GetEnumerator`), не имя интерфейса. В ответе `Name` остаётся каталожным (`System.Collections.IEnumerable.GetEnumerator`) и не склеивается с публичным `GetEnumerator` при одинаковой `Signature`.
+- Конструктор в снимке — короткое имя типа: `` `public Store()` ``. Индексатор — `` `this[...]` ``. Оператор — полная сигнатура со словами `operator +` или `implicit operator`. У преобразования тип после `implicit operator` / `explicit operator` повторяет возвращаемый тип, включая FQN. Слово `checked` у оператора в снимок не входит: checked-форма выглядит как обычный `operator +`. Имя для `memberNames` вытаскивается по [контракту MCP](../skills/library-api/mcp-contract.md): в `find` это каталожный фрагмент, в `usedBy` у оператора — `op_*`. Ключ `op_Checked*` не передавай. Сигнатура целиком в `memberNames` не копируется.
+- XML — blockquote `>`. У члена цитата с отступом в два пробела. Если `inheritdoc` удалось развернуть, в blockquote уже текст summary, param и returns. Строка `inheritdoc` или `inheritdoc from {цель}` остаётся только когда разворот не удался.
+- Якоря: namespace `ns-{slug}`, тип `type-{slug}` (lowercase, не-ASCII буквы и цифры заменяются на `-`). `(global)` — типы без namespace.
+
+## Чего в снимке нет
+
+- Тел методов и исходного текста using-алиасов. Алиас уже раскрыт в FQN, если резолв удался.
+- Унаследованных членов. Ищи их в непосредственных `Base` и `Implements`.
+- Partial слиты: одинаковые члены дедуплицируются по имени, виду, доступности, явной реализации и resolved-сигнатуре. Атрибуты и базы объединяются, порядок — first-seen.

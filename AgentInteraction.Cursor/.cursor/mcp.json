@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "libraries-info": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "./ProjectPersona.StdioMcpAPI.dll"
+      ]
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  // Путь к GGUF embedding-модели. Обязательный.
+  "modelPath": "C:\\models\\embeddinggemma-2-Q8_0.gguf",
+  // Каталог с llama.dll и зависимостями. Обязательный, автопоиска нет.
+  "nativeLibraryDirectory": "C:\\llama-b12359-bin-win-cpu-x64",
+  // Окно нарезки документа в токенах (не n_ctx llama). Обязательно, > 0.
+  "batchSize": 2048,
+  // Шаблон промпта документа: {0} — заголовок, {1} — текст. Ровно два плейсхолдера.
+  // По умолчанию: "title: {0} | text: {1}".
+  "documentQueryTemplate": "title: {0} | text: {1}",
+  // Запас свободных токенов при нарезке. Отсутствует — batchSize / 20. Не меньше 0.
+  "freeSpaceClearance": 100,
+  // Перекрытие окон нарезки в токенах. Отсутствует — 10% окна. Не меньше 0.
+  "overlapTokens": 200,
+  // Число слоёв модели на GPU (n_gpu_layers). Отсутствует — llama_model_default_params.
+  "nGpuLayers": 99,
+  // Устройства оффлоада через запятую (как --device в llama.cpp) или "none".
+  // Отсутствует — все доступные устройства.
+  "devices": "CUDA0",
+  // Flash attention: "on", "off" или "auto". Отсутствует — auto.
+  "flashAttn": "on",
+  // Размер контекста (n_ctx). Отсутствует — llama_context_default_params.
+  "nCtx": 32768,
+  // Логический максимум токенов в одном llama_decode (n_batch).
+  "nBatch": 2048,
+  // Физический размер micro-batch (n_ubatch).
+  "nUbatch": 2048,
+  // Максимум последовательностей в одном decode (n_seq_max).
+  "nSeqMax": 16,
+  // Потоки генерации (n_threads).
+  "nThreads": 8,
+  // Потоки обработки батча (n_threads_batch).
+  "nThreadsBatch": 8
+}
