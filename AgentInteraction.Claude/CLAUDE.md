@@ -56,7 +56,7 @@ Full names are `mcp__libraries-info__find`, `__usedBy`, `__textSearch`, `__ragSe
 
 `find`, `usedBy` and `textSearch` are always published. `ragSearch` is published only when semantic search is enabled in the server configuration: if `find` loads and `ragSearch` doesn't, RAG is off for this session. Use the other tools and don't keep looking for it.
 
-The schema marks nullable parameters without defaults as required: pass `null` explicitly.
+The schema marks nullable parameters without defaults as required: pass `null` explicitly. Pass `null` as the JSON null value, never as the string `"null"`: the string is treated as an assembly name and silently matches nothing. Omitting a required parameter is an error, not "all assemblies". To search all assemblies, first check that the tool works by searching a known name; if that is empty, retry per assembly with `assemblyName` set to the YAML `assembly` value.
 
 | Tool | Parameters (defaults) |
 |---|---|
@@ -71,6 +71,8 @@ Keep `limit` at the default unless the `Total` / `UsedByTotal` shows the sample 
 
 - `Error` set, `Matches` null: the call failed. Pass the `Error` text to the user; don't invent a reindex or restart procedure.
 - Empty `Matches` is not proof of absence until you've checked the catalog `FQN:` and the member line (and `Base`/`Implements` if the member isn't in the block).
+- Before concluding that a `textSearch` literal does not exist, confirm the tool works: a `textSearch` for a name you already see in the catalog must return hits. If it returns `Total: 0`, the problem is the call (wrong `assemblyName`, wrong `ignoreCase`), not the library. Report the call problem and retry before saying anything about absence.
+- Search the catalog with Grep without piping through `head` or extra filters that can drop matches. For a "does a class exist" question, grep the candidate's concept, then read the owning `FQN:` for every hit before answering. Verify each candidate's member before summarizing it: a truncated grep hid a matching class once.
 - `UsedBy: []` for a member means "no static edges", not "dead code": reflection, DI by name, deserialization and `Activator` aren't in the graph. BCL types aren't in it either.
 - `UsedByTotal` or `Total` larger than the returned list means truncation. Don't claim there are no other consumers or hits.
 - Method bodies come only from `find`. `textSearch` snippets and `ragSearch` `Source` are windows of the declaration, not bodies.
